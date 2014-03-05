@@ -1,0 +1,45 @@
+body {
+  background-image: url(assets/cubes.png); 
+  background-position: initial initial; 
+  background-repeat: initial initial;
+}
+header {
+  padding: 2em 0;
+  margin-bottom: 2em;
+}
+header h1 {
+  font-size: 2em;
+}
+header h1 small:before  {
+  content: "|";
+  margin: 0 0.5em;
+  font-size: 1.6em;
+}
+footer {
+  background: #ccc;
+  color: #0003;
+}
+footer p {
+  padding: 0.5em 1em 0.5em 0;
+  margin: 0;        
+}
+
+#logo {
+  padding-top: 65px
+}
+
+iframe {
+  padding-top: 25px
+}
+
+#content {
+  padding-top: 50px
+}
+
+.box {
+  border-radius: 4px;
+  border: 1px solid #BBB;
+  background-color: #FFF;
+  padding: 1em;
+  margin-top: 1em;
+}

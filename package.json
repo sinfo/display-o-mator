@@ -1,0 +1,29 @@
+{
+  "name": "display-o-mator",
+  "version": "0.0.1",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "start": "node index.js",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/xicombd/display-o-mator.git"
+  },
+  "keywords": [
+    "sinfo", "conf", "screens", "twitter", "instagram", "lanyrd"
+  ],
+  "author": "Francisco Dias <francisco@baiodias.com>",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/xicombd/display-o-mator/issues"
+  },
+  "homepage": "https://github.com/xicombd/display-o-mator",
+  "dependencies": {
+    "hapi": "~2.1.1",
+    "handlebars": "~1.3.0",
+    "tabletop": "~1.3.2",
+    "socket.io": "~0.9.16"
+  }
+}

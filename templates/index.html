@@ -1,0 +1,139 @@
+{{> header}}
+
+<div class="ink-grid">
+  <div id="content" class="column-group gutters">
+    <div id="twitter" class="large-50 medium-50 small-100">
+      {{> twitter}}
+    </div>
+    <div id="instagram" class="large-50 medium-50 small-100">
+      {{> instagram}}
+    </div>
+    <div id="logo" class="large-50 medium-50 small-100 content center">
+      {{> logo}}
+    </div>
+    <div id="schedule" class="large-50 medium-50 small-100">
+      {{> schedule}}
+    </div>
+    <div id="liveStream" class="large-50 medium-50 small-100">
+      {{> liveStream}}
+    </div>
+  </div>
+</div>
+
+<script>
+  var socket;
+  var liveStreamKey;
+
+  function init() {
+    // Initialise socket connection
+    // CHANGE HERE: //
+    socket = io.connect("http://localhost", {port: 2180, transports: ["websocket"]});
+
+    // Socket connection successful
+    socket.on("connect", function () {
+        console.log("Connected to socket server");
+    });
+
+    // Socket disconnection
+    socket.on("disconnect", function () {
+        console.log("Disconnected from socket server");
+    });
+
+    // New stuff received
+    socket.on("new stuff", function(data){
+      $( "#instagramContainer" ).empty();
+      for(var i=0; i<data.instagramData.length; i++) {
+        $("#instagramContainer").append("<li><img src="+data.instagramData[i].images.standard_resolution.url + "></li>");
+      }
+
+      $( "#twitterContainer" ).empty();
+      for(var i=0; i<data.twitterData.length; i++) {
+        $("#twitterContainer").append("<div class='box'><div class='column-group horizontal-gutters'><div class='large-15 medium-15 small-15 content-center'><img src="+data.twitterData[i].user.profile_image_url+"></div><div class='large-75 medium-75 small-75 content-left'><b>"+data.twitterData[i].user.name+"</b> <span class='note'>@"+data.twitterData[i].user.screen_name+"</span><p>"+data.twitterData[i].text+"</div></div>");
+      }
+
+      $( "#scheduleContainer" ).empty();
+      for(var i=0; i<data.lanyrdData.length; i++) {
+        $("#scheduleContainer").append("<div class='box'><div class='column-group horizontal-gutters'><div class='large-120 medium-120 small-120 content-left'><b>"+data.lanyrdData[i].title+"</b> <span class='note'> "+data.lanyrdData[i].times+"</span><br><i class='icon-compass'></i> "+data.lanyrdData[i].space+"</div></div></div>");
+      }
+
+      var i = 2;
+      $( "#streamInfoContainer" ).empty();
+      for(var i=0; i<data.lanyrdData.length; i++) {
+        $("#streamInfoContainer").append("<div class='box'><div class='column-group horizontal-gutters'><div class='large-120 medium-120 small-120 content-left'><b>"+data.lanyrdData[i].title+"</b> <span class='note'> "+data.lanyrdData[i].times+"</span><br><i class='icon-compass'></i> "+data.lanyrdData[i].space+"</div></div></div>");
+      }
+
+      console.log("new stuff", data);
+    });
+
+    socket.on("new stream", function(data) {
+      liveStreamKey = data.key;
+      var liveStreamURL = "http://videos.sapo.pt/playhtml?file=http://rd3.videos.sapo.pt/"+liveStreamKey+"/mov/24&live=rtmp://{$hostname}/live/s_informatica&autoStart=1";
+      $('#liveStreamFrame').attr('src', liveStreamURL);
+
+      animate();
+    });
+
+    socket.on("stop stream", function(data) {
+      liveStreamKey = "";
+      var liveStreamURL = "";
+      $('#liveStreamFrame').attr('src', liveStreamURL);
+      
+      animate();
+    });
+  }
+
+
+  var currentScreen = "twitter";
+  function animate () {
+    if(!liveStreamKey || liveStreamKey == "") {
+      switch(currentScreen) {
+        case "twitter":
+          changeToScreen("instagram");
+        break;
+        case "instagram":
+          changeToScreen("logo");
+        break;
+        case "logo":
+          changeToScreen("twitter");
+        break;
+      }
+
+      $("#schedule").show();
+    }
+    else
+    {
+      switch(currentScreen) {
+        case "twitter":
+          changeToScreen("instagram");
+        break;
+        case "instagram":
+          changeToScreen("logo");
+        break;
+        case "logo":
+          changeToScreen("schedule");
+        break;
+        case "schedule":
+          changeToScreen("twitter");
+        break;
+      }
+
+      $("#liveStream").show();
+    }
+  };
+
+  function changeToScreen (screenName) {
+    $("#"+screenName).show().siblings().hide();
+    currentScreen = screenName;
+  }
+
+
+  // FIRE IN THE HOLE!!!
+  $( document ).ready(function() {
+    init();
+    animate();
+  });
+  setInterval(animate, 12000);
+
+</script>
+
+{{> footer}}
